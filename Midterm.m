@@ -72,7 +72,8 @@ t1 = length(dat_low_pass)/fs; % duration in seconds
 % Length of the data
 len1 = t1*fs; % duration*sampling frequency
 % Time vector
-timeVec1 =  0:1/fs:(len1-1)/fs;figure;
+timeVec1 =  0:1/fs:(len1-1)/fs;
+figure;
 plot(timeVec1, dat_low_pass);
 
 
@@ -120,7 +121,7 @@ subplot(2,1,1);
 plot(timeVec1, dat_whitened);
 title('Bandpassed whitened time series');
 subplot(2,1,2);
-pwelch(dat_whitened,4096,2048,[],fs);
+pwelch(dat_whitened,[],[],[],fs);
 
 % Why we bandpassed the whitened data - Because LIGO is most sensitive
 % between 100 Hz and 1000 Hz. Outside this frequency range signals other
@@ -133,7 +134,7 @@ dat_whitened_resampled = resample(dat_low_pass,1,2);
 % New sampling frequency
 fs_new = 2048; % fs/2
 % Create a power spectrum plot with the newly resampled data
-[pxx, f] = pwelch(dat_whitened_resampled,4096,2048,4*fs_new,fs_new);
+[pxx, f] = pwelch(dat_whitened_resampled,[],[],4*fs_new,fs_new);
 figure;
 plot(f, 10*log10(pxx));
 title('Welch Power Spectral density estimate after the new resampling');
@@ -142,16 +143,24 @@ title('Welch Power Spectral density estimate after the new resampling');
 %% Step X
 % Trying to be smart 
 % Find peaks in the power specrtal density plot
-[pks, locs] = findpeaks(10*log10(pxx));
-% findpeaks probably returns all the peaks of the psd
-% Set a threshold below which we discard the peaks 
-pks = pks(pks >= -125);
-freq_list = f(locs);
+[pks, locs, w, p] = findpeaks(10*log10(pxx));
+p_sorted = sort(p, 'descend');
+for i = 1:11
+    for j = 1:length(locs)
+        if p_sorted(i) == pks(j)
+            indx(i) = j;
+        end
+    end
+end
+freq_list = f(locs(indx));
+
 
 % Not so smart
 % List of peak frequencies from the PSD plot
-f_list = [393, 347.5, 344.75, 343.5, 60, 46.75, 16.75, 13.75, 12, 10.25, 2]; % kHz
-
-
+% f_list = [393, 347.5, 344.75, 343.5, 60, 46.75, 16.75, 13.75, 12, 10.25, 2]; % kHz
+% list = [freq_list pks];
+% We can see 11 narrowband noise in the final power spectrum. The one at 60
+% Hz is the noise due to power lines. The ones that are below 50 Hz are due
+% to seismic noise. 
 
 
