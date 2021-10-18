@@ -1,6 +1,8 @@
-%% Midterm Project
-addpath 'D:\COURSE\Fall_2021\Gravitational Wave\Midterm_Project'
+%% Midterm Project - PHYS 5387 : Gravitational Wave Data Analysis
+%% Wendy Mendoza & Shahrear Khan Faisal
 
+%%
+addpath 'D:\COURSE\Fall_2021\Gravitational Wave\Midterm_Project'
 
 %% Step I
 load S5_878486500_878486600_DARM.mat
@@ -37,7 +39,6 @@ xlabel('time(sec)');
 ylabel('amplitude');
 title('Time Series');
 subplot(2,1,2);
-% pwelch(dat1, w, novrlp, [], fs);
 pwelch(dat1, [], [], [], fs);
 
 
@@ -69,10 +70,6 @@ fs = fs*(1/4);
 t1 = length(dat_low_pass)/fs; % duration in seconds
 % Length of the data
 len1 = t1*fs; % duration*sampling frequency
-% Time vector
-timeVec1 =  0:1/fs:(len1-1)/fs;
-% figure;
-% plot(timeVec1, dat_low_pass);
 
 
 %% Step VI
@@ -112,6 +109,8 @@ figure;
 subplot(2,1,1);
 plot(timeVec1, dat_whitened);
 title('Time series of whitened data');
+xlabel('time (sec)');
+ylabel('Amplitude');
 subplot(2,1,2);
 pwelch(dat_whitened,[],[],[],fs);
 
@@ -128,6 +127,8 @@ figure;
 subplot(2,1,1);
 plot(timeVec1, dat_whitened);
 title('Bandpassed whitened time series');
+xlabel('time (sec)');
+ylabel('Amplitude');
 subplot(2,1,2);
 pwelch(dat_whitened,[],[],[],fs);
 
