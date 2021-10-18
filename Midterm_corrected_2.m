@@ -151,7 +151,7 @@ ylabel('Power/frequency (dB/Hz)');
 
 
 %% Step X
-% Find peaks in the power specrtal density plot
+% Find peaks and widths of the peaks in the power specrtal density plot
 [pks, locs, w, p] = findpeaks(10*log10(pxx));
 
 pks = pks';
@@ -161,6 +161,8 @@ p = p';
 p_sorted = sort(p, 'descend');
 indx = zeros(1,11);
 w_indx = zeros(1,11);
+% Get the indices of the strongest narrowband lines
+% From the power spectral density plot we found 11 narrowband lines
 for i = 1:11
     for j = 1:length(pks)
         if p_sorted(i) == p(j)
@@ -171,8 +173,10 @@ for i = 1:11
 end
 freq_list = f(indx);
 w1 = w(w_indx);
+% Full Width Half Maximum
+w1 = w1'/2;
 % 2X2 matrix with narrowband frequencies and full width half maximum
-narrowband = [freq_list w1'];
+narrowband = [freq_list w1];
 
 
 
